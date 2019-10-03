@@ -6,6 +6,7 @@ from braintreehttp.http_response import HttpResponse
 from braintreehttp.http_error import HttpError
 from braintreehttp.serializers import Json, Text, Multipart, FormEncoded
 
+
 class HttpClient(object):
 
     def __init__(self, environment):
@@ -36,17 +37,17 @@ class HttpClient(object):
         for injector in self._injectors:
             injector(reqCpy)
 
-        if "User-Agent" not in reqCpy.headers:
-            reqCpy.headers["User-Agent"] = self.get_user_agent()
+        if "user-agent" not in reqCpy.headers:
+            reqCpy.headers["user-agent"] = self.get_user_agent()
 
         data = None
         if hasattr(reqCpy, 'body') and reqCpy.body is not None:
             data = self.encoder.serialize_request(reqCpy)
 
         resp = requests.request(method=reqCpy.verb,
-                url=self.environment.base_url + reqCpy.path,
-                headers=reqCpy.headers,
-                data=data)
+                                url=self.environment.base_url + reqCpy.path,
+                                headers=reqCpy.headers,
+                                data=data)
 
         return self.parse_response(resp)
 
@@ -61,5 +62,3 @@ class HttpClient(object):
             return HttpResponse(body, response.status_code, response.headers)
         else:
             raise HttpError(response.text, response.status_code, response.headers)
-
-
